@@ -12,26 +12,37 @@
  * limitations under the License.
  */
 
-import { createSignal, createEffect, onMount, Show, onCleanup, startTransition, Component } from 'solid-js'
-
 import {
-  init, dispose, utils, Nullable, Chart, OverlayMode, Styles,
-  TooltipIconPosition, ActionType, PaneOptions, Indicator, DomPosition, FormatDateType
+  ActionType,
+  Chart,
+  DomPosition,
+  FormatDateType,
+  Indicator,
+  Nullable,
+  OverlayMode,
+  PaneOptions,
+  Styles,
+  TooltipIconPosition,
+  dispose,
+  init,
+  utils
 } from 'klinecharts'
-
-import lodashSet from 'lodash/set'
-import lodashClone from 'lodash/cloneDeep'
-
-import { SelectDataSourceItem, Loading } from './component'
-
+import { ChartPro, ChartProOptions, Period, SymbolInfo } from './types'
+import { Component, Show, createEffect, createSignal, onCleanup, onMount, startTransition } from 'solid-js'
 import {
-  PeriodBar, DrawingBar, IndicatorModal, TimezoneModal, SettingModal,
-  ScreenshotModal, IndicatorSettingModal, SymbolSearchModal
+  DrawingBar,
+  IndicatorModal,
+  IndicatorSettingModal,
+  PeriodBar,
+  ScreenshotModal,
+  SettingModal,
+  TimezoneModal
 } from './widget'
+import { Loading, SelectDataSourceItem } from './component'
 
+import lodashClone from 'lodash/cloneDeep'
+import lodashSet from 'lodash/set'
 import { translateTimezone } from './widget/timezone-modal/data'
-
-import { SymbolInfo, Period, ChartProOptions, ChartPro } from './types'
 
 export interface ChartProComponentProps extends Required<Omit<ChartProOptions, 'container'>> {
   ref: (chart: ChartPro) => void
@@ -42,7 +53,7 @@ interface PrevSymbolPeriod {
   period: Period
 }
 
-function createIndicator (widget: Nullable<Chart>, indicatorName: string, isStack?: boolean, paneOptions?: PaneOptions): Nullable<string> {
+function createIndicator(widget: Nullable<Chart>, indicatorName: string, isStack?: boolean, paneOptions?: PaneOptions): Nullable<string> {
   if (indicatorName === 'VOL') {
     paneOptions = { gap: { bottom: 2 }, ...paneOptions }
   }
@@ -440,14 +451,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   return (
     <>
-      <i class="icon-close klinecharts-pro-load-icon"/>
-      <Show when={symbolSearchModalVisible()}>
-        <SymbolSearchModal
-          locale={props.locale}
-          datafeed={props.datafeed}
-          onSymbolSelected={symbol => { setSymbol(symbol) }}
-          onClose={() => { setSymbolSearchModalVisible(false) }}/>
-      </Show>
+      <i class="icon-close klinecharts-pro-load-icon" />
       <Show when={indicatorModalVisible()}>
         <IndicatorModal
           locale={props.locale}
@@ -481,7 +485,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
               }
             }
             setSubIndicators(newSubIndicators)
-          }}/>
+          }} />
       </Show>
       <Show when={timezoneModalVisible()}>
         <TimezoneModal
@@ -521,7 +525,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
           locale={props.locale}
           params={indicatorSettingModalParams()}
           onClose={() => { setIndicatorSettingModalParams({ visible: false, indicatorName: '', paneId: '', calcParams: [] }) }}
-          onConfirm={(params)=> {
+          onConfirm={(params) => {
             const modalParams = indicatorSettingModalParams()
             widget?.overrideIndicator({ name: modalParams.indicatorName, calcParams: params }, modalParams.paneId)
           }}
@@ -537,9 +541,8 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
           try {
             await startTransition(() => setDrawingBarVisible(!drawingBarVisible()))
             widget?.resize()
-          } catch (e) {}    
+          } catch (e) { }
         }}
-        onSymbolClick={() => { setSymbolSearchModalVisible(!symbolSearchModalVisible()) }}
         onPeriodChange={setPeriod}
         onIndicatorClick={() => { setIndicatorModalVisible((visible => !visible)) }}
         onTimezoneClick={() => { setTimezoneModalVisible((visible => !visible)) }}
@@ -554,7 +557,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       <div
         class="klinecharts-pro-content">
         <Show when={loadingVisible()}>
-          <Loading/>
+          <Loading />
         </Show>
         <Show when={drawingBarVisible()}>
           <DrawingBar
@@ -563,12 +566,13 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
             onModeChange={mode => { widget?.overrideOverlay({ mode: mode as OverlayMode }) }}
             onLockChange={lock => { widget?.overrideOverlay({ lock }) }}
             onVisibleChange={visible => { widget?.overrideOverlay({ visible }) }}
-            onRemoveClick={(groupId) => { widget?.removeOverlay({ groupId }) }}/>
+            onRemoveClick={(groupId) => { widget?.removeOverlay({ groupId }) }}
+          />
         </Show>
         <div
           ref={widgetRef}
           class='klinecharts-pro-widget'
-          data-drawing-bar-visible={drawingBarVisible()}/>
+          data-drawing-bar-visible={drawingBarVisible()} />
       </div>
     </>
   )
