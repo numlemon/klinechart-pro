@@ -110,6 +110,34 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     visible: false, indicatorName: '', paneId: '', calcParams: [] as Array<any>
   })
 
+  const createHorizontalLine = (groupId: string, color: string, price: number) => {
+    widget!.createOverlay(
+      {
+        groupId,
+        name: 'simpleTag',
+        styles: {
+          line: {
+            color: color + '9c',
+            size: 0.5,
+          },
+          rectText: {
+            borderColor: color,
+            backgroundColor: color
+          }
+        },
+        points: [
+          {
+            value: price,
+          }
+        ]
+      }
+    )
+  }
+
+  const removeByGroupId = (groupId: string) => {
+    widget!.removeOverlay({ groupId })
+  }
+
   props.ref({
     setTheme,
     getTheme: () => theme(),
@@ -122,7 +150,9 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
     setSymbol,
     getSymbol: () => symbol(),
     setPeriod,
-    getPeriod: () => period()
+    getPeriod: () => period(),
+    createHorizontalLine,
+    removeByGroupId,
   })
 
   const documentResize = () => {
@@ -560,7 +590,9 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
         <Show when={drawingBarVisible()}>
           <DrawingBar
             locale={props.locale}
-            onDrawingItemClick={overlay => { widget?.createOverlay(overlay) }}
+            onDrawingItemClick={overlay => {
+              widget?.createOverlay(overlay)
+            }}
             onModeChange={mode => { widget?.overrideOverlay({ mode: mode as OverlayMode }) }}
             onLockChange={lock => { widget?.overrideOverlay({ lock }) }}
             onVisibleChange={visible => { widget?.overrideOverlay({ visible }) }}

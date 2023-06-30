@@ -122,4 +122,12 @@ export default class KLineChartPro implements ChartPro {
   getPeriod(): Period {
     return this._chartApi!.getPeriod()
   }
+
+  createHorizontalLine(groupId: string, color: string, price: number): void {
+    this._chartApi!.createHorizontalLine(groupId, color, price)
+  }
+
+  removeByGroupId(groupId: string): void {
+    this._chartApi!.removeByGroupId(groupId)
+  }
 }

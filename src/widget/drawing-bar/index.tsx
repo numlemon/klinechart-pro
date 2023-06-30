@@ -13,16 +13,18 @@
  */
 
 import { Component, createMemo, createSignal } from 'solid-js'
-
+import {
+  Icon,
+  createFibonacciOptions,
+  createMagnetOptions,
+  createMoreLineOptions,
+  createPolygonOptions,
+  createSingleLineOptions,
+  createWaveOptions
+} from './icons'
 import { OverlayCreate, OverlayMode } from 'klinecharts'
 
 import { List } from '../../component'
-import {
-  createSingleLineOptions, createMoreLineOptions,
-  createPolygonOptions, createFibonacciOptions, createWaveOptions,
-  createMagnetOptions,
-  Icon
-} from './icons'
 
 export interface DrawingBarProps {
   locale: string
@@ -131,7 +133,7 @@ const DrawingBar: Component<DrawingBarProps> = props => {
           }}>
           {
             modeIcon() === 'weak_magnet'
-              ? (mode() === 'weak_magnet' ? <Icon name="weak_magnet" class="selected"/> : <Icon name="weak_magnet"/>) 
+              ? (mode() === 'weak_magnet' ? <Icon name="weak_magnet" class="selected"/> : <Icon name="weak_magnet"/>)
               : (mode() === 'strong_magnet' ? <Icon name="strong_magnet" class="selected"/> : <Icon name="strong_magnet"/>)
           }
         </span>

@@ -70,5 +70,7 @@ export interface ChartPro {
   setSymbol(symbol: SymbolInfo): void
   getSymbol(): SymbolInfo
   setPeriod(period: Period): void
-  getPeriod(): Period
+  getPeriod(): Period,
+  createHorizontalLine(groupId: string, color: string, price: number): void,
+  removeByGroupId(groupId: string): void,
 }
