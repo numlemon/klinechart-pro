@@ -104,8 +104,6 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
 
   const [drawingBarVisible, setDrawingBarVisible] = createSignal(props.drawingBarVisible)
 
-  const [symbolSearchModalVisible, setSymbolSearchModalVisible] = createSignal(false)
-
   const [loadingVisible, setLoadingVisible] = createSignal(false)
 
   const [indicatorSettingModalParams, setIndicatorSettingModalParams] = createSignal({
@@ -260,7 +258,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
         const p = period()
         const [to] = adjustFromTo(p, timestamp!, 1)
         const [from] = adjustFromTo(p, to, 500)
-        const kLineDataList = await props.datafeed.getHistoryKLineData(symbol(), p, from, to)
+        const kLineDataList = await props.getHistoryKLineData(symbol(), p, from, to)
         widget?.applyMoreData(kLineDataList, kLineDataList.length > 0)
         loading = false
       }
@@ -322,7 +320,7 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
   createEffect((prev?: PrevSymbolPeriod) => {
     if (!loading) {
       if (prev) {
-        props.datafeed.unsubscribe(prev.symbol, prev.period)
+        props.unsubscribe(prev.symbol, prev.period)
       }
       const s = symbol()
       const p = period()
@@ -330,9 +328,9 @@ const ChartProComponent: Component<ChartProComponentProps> = props => {
       setLoadingVisible(true)
       const get = async () => {
         const [from, to] = adjustFromTo(p, new Date().getTime(), 500)
-        const kLineDataList = await props.datafeed.getHistoryKLineData(s, p, from, to)
+        const kLineDataList = await props.getHistoryKLineData(s, p, from, to)
         widget?.applyNewData(kLineDataList, kLineDataList.length > 0)
-        props.datafeed.subscribe(s, p, data => {
+        props.subscribe(s, p, data => {
           widget?.updateData(data)
         })
         loading = false

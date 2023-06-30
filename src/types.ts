@@ -15,16 +15,13 @@
 import { DeepPartial, KLineData, Styles } from 'klinecharts'
 
 export interface SymbolInfo {
-  ticker: string
-  name?: string
-  shortName?: string
-  exchange?: string
-  market?: string
-  pricePrecision?: number
-  volumePrecision?: number
-  priceCurrency?: string
-  type?: string
-  logo?: string
+  exchange: string
+  exchangeId: number
+  pair: string
+  pairId: number
+  priceCurrency: string,
+  pricePrecision: number,
+  volumePrecision: number,
 }
 
 export interface Period {
@@ -35,11 +32,11 @@ export interface Period {
 
 export type DatafeedSubscribeCallback = (data: KLineData) => void
 
-export interface Datafeed {
-  getHistoryKLineData (symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]>
-  subscribe (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void
-  unsubscribe (symbol: SymbolInfo, period: Period): void
-}
+// export interface Datafeed {
+//   getHistoryKLineData(symbol: SymbolInfo, period: Period, from: number, to: number): Promise<KLineData[]>
+//   subscribe(symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback): void
+//   unsubscribe(symbol: SymbolInfo, period: Period): void
+// }
 
 export interface ChartProOptions {
   container: string | HTMLElement
@@ -54,7 +51,11 @@ export interface ChartProOptions {
   timezone?: string
   mainIndicators?: string[]
   subIndicators?: string[]
-  datafeed: Datafeed
+  // datafeed: Datafeed,
+  getHistoryKLineData: (symbol: SymbolInfo, period: Period, from: number, to: number) => Promise<KLineData[]>,
+  subscribe: (symbol: SymbolInfo, period: Period, callback: DatafeedSubscribeCallback) => void,
+  unsubscribe: (symbol: SymbolInfo, period: Period) => void,
+
 }
 
 export interface ChartPro {

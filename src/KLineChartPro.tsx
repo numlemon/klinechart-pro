@@ -38,7 +38,7 @@ export default class KLineChartPro implements ChartPro {
           styles={options.styles ?? {}}
           watermark={options.watermark ?? ''}
           theme={options.theme ?? 'dark'}
-          locale={options.locale ?? 'th-TH'}
+          locale={options.locale ?? 'en-US'}
           drawingBarVisible={options.drawingBarVisible ?? true}
           symbol={options.symbol}
           period={options.period}
@@ -59,7 +59,11 @@ export default class KLineChartPro implements ChartPro {
           timezone={options.timezone ?? 'Asia/Bangkok'}
           mainIndicators={options.mainIndicators ?? ['MA']}
           subIndicators={options.subIndicators ?? ['VOL']}
-          datafeed={options.datafeed} />
+          // datafeed={options.datafeed}
+          getHistoryKLineData={options.getHistoryKLineData}
+          subscribe={options.subscribe}
+          unsubscribe={options.unsubscribe}
+        />
       ),
       this._container
     )
