@@ -14,7 +14,7 @@
 
 import i18n from '../../i18n'
 
-import { SelectDataSourceItem } from '../../component'
+import { SelectDataSourceItem } from '../../components';
 
 export function translateTimezone (timezone: string, locale: string): string {
   switch (timezone) {

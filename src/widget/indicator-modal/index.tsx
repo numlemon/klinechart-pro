@@ -14,7 +14,7 @@
 
 import { Component, createMemo } from 'solid-js'
 
-import { Modal, List, Checkbox } from '../../component'
+import { Modal, List, Checkbox } from '../../components'
 
 import i18n from '../../i18n'
 
