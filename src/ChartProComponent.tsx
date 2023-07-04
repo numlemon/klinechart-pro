@@ -25,7 +25,7 @@ import {
   TooltipIconPosition,
   dispose,
   init,
-  utils,
+  utils
 } from 'klinecharts';
 import { ChartPro, ChartProOptions, Period, SymbolInfo } from './types';
 import {
@@ -35,7 +35,7 @@ import {
   createSignal,
   onCleanup,
   onMount,
-  startTransition,
+  startTransition
 } from 'solid-js';
 import {
   DrawingBar,
@@ -44,13 +44,16 @@ import {
   PeriodBar,
   ScreenshotModal,
   SettingModal,
-  TimezoneModal,
+  TimezoneModal
 } from './widget';
 import { Loading, SelectDataSourceItem } from './components';
 
 import lodashClone from 'lodash/cloneDeep';
 import lodashSet from 'lodash/set';
 import { translateTimezone } from './widget/timezone-modal/data';
+import IndicatorSheet from './widget/indicator-sheet';
+import TimezoneSheet from './widget/timezone-sheet';
+import SettingSheet from './widget/setting-sheet';
 
 export interface ChartProComponentProps
   extends Required<Omit<ChartProOptions, 'container'>> {
@@ -88,7 +91,7 @@ function createIndicator(
             icons.push(defaultStyles.tooltip.icons[3]);
           }
           return { icons };
-        },
+        }
       },
       isStack,
       paneOptions
@@ -112,14 +115,14 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
   const [period, setPeriod] = createSignal(props.period);
   const [indicatorModalVisible, setIndicatorModalVisible] = createSignal(false);
   const [mainIndicators, setMainIndicators] = createSignal([
-    ...props.mainIndicators!,
+    ...props.mainIndicators!
   ]);
   const [subIndicators, setSubIndicators] = createSignal({});
 
   const [timezoneModalVisible, setTimezoneModalVisible] = createSignal(false);
   const [timezone, setTimezone] = createSignal<SelectDataSourceItem>({
     key: props.timezone,
-    text: translateTimezone(props.timezone, props.locale),
+    text: translateTimezone(props.timezone, props.locale)
   });
 
   const [settingModalVisible, setSettingModalVisible] = createSignal(false);
@@ -138,7 +141,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
       visible: false,
       indicatorName: '',
       paneId: '',
-      calcParams: [] as Array<any>,
+      calcParams: [] as Array<any>
     });
 
   const createHorizontalLine = (
@@ -153,18 +156,18 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
       styles: {
         line: {
           color: color + '9c',
-          size: 0.5,
+          size: 0.5
         },
         rectText: {
           borderColor: color,
-          backgroundColor: color,
-        },
+          backgroundColor: color
+        }
       },
       points: [
         {
-          value: price,
-        },
-      ],
+          value: price
+        }
+      ]
     });
   };
 
@@ -182,7 +185,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
     setTimezone: (timezone: string) => {
       setTimezone({
         key: timezone,
-        text: translateTimezone(props.timezone, locale()),
+        text: translateTimezone(props.timezone, locale())
       });
     },
     getTimezone: () => timezone().key,
@@ -191,7 +194,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
     setPeriod,
     getPeriod: () => period(),
     createHorizontalLine,
-    removeByGroupId,
+    removeByGroupId
   });
 
   const documentResize = () => {
@@ -313,8 +316,8 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
             timestamp,
             'YYYY-MM-DD HH:mm'
           );
-        },
-      },
+        }
+      }
     });
 
     if (widget) {
@@ -395,7 +398,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
               visible: true,
               indicatorName: data.indicatorName,
               paneId: data.paneId,
-              calcParams: indicator.calcParams,
+              calcParams: indicator.calcParams
             });
             break;
           }
@@ -490,7 +493,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
               color: color,
               activeColor: color,
               backgroundColor: 'transparent',
-              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
+              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)'
             },
             {
               id: 'invisible',
@@ -509,7 +512,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
               color: color,
               activeColor: color,
               backgroundColor: 'transparent',
-              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
+              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)'
             },
             {
               id: 'setting',
@@ -528,7 +531,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
               color: color,
               activeColor: color,
               backgroundColor: 'transparent',
-              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
+              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)'
             },
             {
               id: 'close',
@@ -547,11 +550,11 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
               color: color,
               activeColor: color,
               backgroundColor: 'transparent',
-              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)',
-            },
-          ],
-        },
-      },
+              activeBackgroundColor: 'rgba(22, 119, 255, 0.15)'
+            }
+          ]
+        }
+      }
     });
   });
 
@@ -573,55 +576,74 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
   return (
     <>
       <i class="icon-close klinecharts-pro-load-icon" />
-      <Show when={indicatorModalVisible()}>
-        <IndicatorModal
-          locale={props.locale}
-          mainIndicators={mainIndicators()}
-          subIndicators={subIndicators()}
-          onClose={() => {
-            setIndicatorModalVisible(false);
-          }}
-          onMainIndicatorChange={(data) => {
-            const newMainIndicators = [...mainIndicators()];
-            if (data.added) {
-              createIndicator(widget, data.name, true, { id: 'candle_pane' });
-              newMainIndicators.push(data.name);
-            } else {
-              widget?.removeIndicator('candle_pane', data.name);
-              newMainIndicators.splice(newMainIndicators.indexOf(data.name), 1);
+      <IndicatorSheet
+        locale={props.locale}
+        mainIndicators={mainIndicators()}
+        subIndicators={subIndicators()}
+        isOpen={indicatorModalVisible()}
+        setIsOpen={setIndicatorModalVisible}
+        onMainIndicatorChange={(data) => {
+          const newMainIndicators = [...mainIndicators()];
+          if (data.added) {
+            createIndicator(widget, data.name, true, { id: 'candle_pane' });
+            newMainIndicators.push(data.name);
+          } else {
+            widget?.removeIndicator('candle_pane', data.name);
+            newMainIndicators.splice(newMainIndicators.indexOf(data.name), 1);
+          }
+          setMainIndicators(newMainIndicators);
+        }}
+        onSubIndicatorChange={(data) => {
+          const newSubIndicators = { ...subIndicators() };
+          if (data.added) {
+            const paneId = createIndicator(widget, data.name);
+            if (paneId) {
+              // @ts-expect-error
+              newSubIndicators[data.name] = paneId;
             }
-            setMainIndicators(newMainIndicators);
-          }}
-          onSubIndicatorChange={(data) => {
-            const newSubIndicators = { ...subIndicators() };
-            if (data.added) {
-              const paneId = createIndicator(widget, data.name);
-              if (paneId) {
-                // @ts-expect-error
-                newSubIndicators[data.name] = paneId;
-              }
-            } else {
-              if (data.paneId) {
-                widget?.removeIndicator(data.paneId, data.name);
-                // @ts-expect-error
-                delete newSubIndicators[data.name];
-              }
+          } else {
+            if (data.paneId) {
+              widget?.removeIndicator(data.paneId, data.name);
+              // @ts-expect-error
+              delete newSubIndicators[data.name];
             }
-            setSubIndicators(newSubIndicators);
-          }}
-        />
-      </Show>
-      <Show when={timezoneModalVisible()}>
-        <TimezoneModal
-          locale={props.locale}
-          timezone={timezone()}
-          onClose={() => {
-            setTimezoneModalVisible(false);
-          }}
-          onConfirm={setTimezone}
-        />
-      </Show>
+          }
+          setSubIndicators(newSubIndicators);
+        }}
+      />
+      <TimezoneSheet
+        locale={props.locale}
+        timezone={timezone()}
+        isOpen={timezoneModalVisible()}
+        setIsOpen={() => {
+          setTimezoneModalVisible(false);
+        }}
+        onConfirm={setTimezone}
+      />
       <Show when={settingModalVisible()}>
+        <SettingSheet
+          locale={props.locale}
+          currentStyles={utils.clone(widget!.getStyles())}
+          isOpen={settingModalVisible()}
+          setIsOpen={setSettingModalVisible}
+          onChange={(style) => {
+            widget?.setStyles(style);
+          }}
+          onRestoreDefault={(options: SelectDataSourceItem[]) => {
+            const style = {};
+            options.forEach((option) => {
+              const key = option.key;
+              lodashSet(
+                style,
+                key,
+                utils.formatValue(widgetDefaultStyles(), key)
+              );
+            });
+            widget?.setStyles(style);
+          }}
+        />
+      </Show>
+      {/* <Show when={settingModalVisible()}>
         <SettingModal
           locale={props.locale}
           currentStyles={utils.clone(widget!.getStyles())}
@@ -644,7 +666,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
             widget?.setStyles(style);
           }}
         />
-      </Show>
+      </Show> */}
       <Show when={screenshotUrl().length > 0}>
         <ScreenshotModal
           locale={props.locale}
@@ -663,7 +685,7 @@ const ChartProComponent: Component<ChartProComponentProps> = (props) => {
               visible: false,
               indicatorName: '',
               paneId: '',
-              calcParams: [],
+              calcParams: []
             });
           }}
           onConfirm={(params) => {
